@@ -6,7 +6,10 @@ public class SingleLinkedListDemo {
         singleLinkedList.addByOrder(new HeroNode(3, "吴用", "智多星"));
         singleLinkedList.addByOrder(new HeroNode(1, "宋江", "及时雨"));
         singleLinkedList.addByOrder(new HeroNode(2, "卢俊义", "玉麒麟"));
-        singleLinkedList.addByOrder(new HeroNode(2, "卢俊义", "玉麒麟"));
+        singleLinkedList.update(new HeroNode(2, "小卢", "玉麒麟~~~"));
+        singleLinkedList.delete(2);
+        singleLinkedList.delete(1);
+        singleLinkedList.delete(3);
         singleLinkedList.list();
     }
 }
@@ -68,10 +71,76 @@ class SingleLinkedList {
     }
 
     /**
+     * 更新链表元素
+     * @param newHeroNode
+     */
+    public void update(HeroNode newHeroNode) {
+        HeroNode temp = head.next;
+        boolean isExists = false;
+        if (temp == null) {
+            System.out.println("链表为空");
+            return;
+        }
+        while (true) {
+            if (temp == null) {
+                break;
+            }
+            if (temp.no == newHeroNode.no) {
+                //找到待更新的元素
+                isExists = true;
+                break;
+            }
+            temp = temp.next;
+        }
+        if (isExists) {
+            //更新元素信息
+            temp.name = newHeroNode.name;
+            temp.nickName = newHeroNode.nickName;
+        } else {
+            System.out.println("未找到待更新的元素");
+        }
+    }
+
+    /**
+     * 删除链表元素
+     * @param no
+     */
+    public void delete(int no) {
+        //找到待删除元素的前一个元素
+        HeroNode temp = head;
+        boolean isExists = false;
+        if (temp.next == null) {
+            System.out.println("链表为空");
+            return;
+        }
+        while (true) {
+            if (temp.next == null) {
+                break;
+            }
+            if (temp.next.no == no) {
+                isExists = true;
+                break;
+            }
+            temp = temp.next;
+        }
+        if (isExists) {
+            temp.next = temp.next.next;
+        } else {
+            System.out.println("待删除元素不存在");
+        }
+    }
+
+
+
+    /**
      * 遍历链表
      */
     public void list() {
         HeroNode temp = head.next;
+        if (temp == null) {
+            System.out.println("链表为空");
+            return;
+        }
         while (true) {
             if (temp == null) {
                 break;
