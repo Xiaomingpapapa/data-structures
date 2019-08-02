@@ -7,12 +7,63 @@ public class SingleLinkedListDemo {
         singleLinkedList.addByOrder(new HeroNode(1, "宋江", "及时雨"));
         singleLinkedList.addByOrder(new HeroNode(2, "卢俊义", "玉麒麟"));
         singleLinkedList.update(new HeroNode(2, "小卢", "玉麒麟~~~"));
-        singleLinkedList.delete(2);
-        singleLinkedList.delete(1);
-        singleLinkedList.delete(3);
+//        singleLinkedList.delete(2);
+//        singleLinkedList.delete(1);
+//        singleLinkedList.delete(3);
         singleLinkedList.list();
+        System.out.println(getLength(singleLinkedList.head));
+        System.out.println(getLastIndexNode(singleLinkedList.head, 4));
+    }
+
+
+    /**
+     * 获取链表有效元素个数
+     *
+     * @param head
+     * @return
+     */
+    public static int getLength(HeroNode head) {
+        if (head.next == null) {
+            return 0;
+        }
+        HeroNode temp = head.next;
+        int size = 0;
+        while (true) {
+            if (temp == null) {
+                break;
+            }
+            size++;
+            temp = temp.next;
+        }
+        return size;
+    }
+
+    /**
+     * 获取链表倒数第 index 个元素
+     * @param head
+     * @param index
+     * @return
+     */
+    public static HeroNode getLastIndexNode(HeroNode head, int index) {
+        if (head.next == null) {
+            System.out.println("链表为空");
+            return null;
+        }
+        //输入的 index 不符合规则
+        if (index <= 0 || index > getLength(head)) {
+            return null;
+        }
+
+        HeroNode curentNode = head.next;
+        int size = getLength(head);
+        //往前遍历 size - index 次
+        for (int i = 0; i < size - index; i++) {
+            curentNode = curentNode.next;
+        }
+        return curentNode;
     }
 }
+
 
 class SingleLinkedList {
     //初始化头结点，不存放数据
@@ -72,6 +123,7 @@ class SingleLinkedList {
 
     /**
      * 更新链表元素
+     *
      * @param newHeroNode
      */
     public void update(HeroNode newHeroNode) {
@@ -103,6 +155,7 @@ class SingleLinkedList {
 
     /**
      * 删除链表元素
+     *
      * @param no
      */
     public void delete(int no) {
@@ -129,7 +182,6 @@ class SingleLinkedList {
             System.out.println("待删除元素不存在");
         }
     }
-
 
 
     /**
