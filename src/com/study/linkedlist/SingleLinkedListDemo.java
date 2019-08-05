@@ -1,18 +1,27 @@
 package com.study.linkedlist;
 
+import java.text.BreakIterator;
+import java.time.temporal.Temporal;
+import java.util.Stack;
+
 public class SingleLinkedListDemo {
     public static void main(String[] args) {
-        SingleLinkedList singleLinkedList = new SingleLinkedList();
-        singleLinkedList.addByOrder(new HeroNode(3, "吴用", "智多星"));
-        singleLinkedList.addByOrder(new HeroNode(1, "宋江", "及时雨"));
-        singleLinkedList.addByOrder(new HeroNode(2, "卢俊义", "玉麒麟"));
-        singleLinkedList.update(new HeroNode(2, "小卢", "玉麒麟~~~"));
-//        singleLinkedList.delete(2);
-//        singleLinkedList.delete(1);
-//        singleLinkedList.delete(3);
-        singleLinkedList.list();
-        System.out.println(getLength(singleLinkedList.head));
-        System.out.println(getLastIndexNode(singleLinkedList.head, 4));
+        SingleLinkedList singleLinkedList1 = new SingleLinkedList();
+        singleLinkedList1.addByOrder(new HeroNode(3, "吴用", "智多星"));
+        singleLinkedList1.addByOrder(new HeroNode(1, "宋江", "及时雨"));
+        singleLinkedList1.addByOrder(new HeroNode(2, "卢俊义", "玉麒麟"));
+        singleLinkedList1.addByOrder(new HeroNode(4, "林冲", "豹子头"));
+
+        SingleLinkedList singleLinkedList2 = new SingleLinkedList();
+        singleLinkedList2.addByOrder(new HeroNode(5, "鲁智深", "花和尚"));
+        singleLinkedList2.addByOrder(new HeroNode(6, "李逵", "黑旋风"));
+
+        //合并两个有序链表
+        HeroNode heroNode = mergeLinkedList(singleLinkedList1.head, singleLinkedList2.head);
+        SingleLinkedList mergedSingleLinkedList = new SingleLinkedList();
+        mergedSingleLinkedList.head = heroNode;
+        mergedSingleLinkedList.list();
+
     }
 
 
@@ -40,6 +49,7 @@ public class SingleLinkedListDemo {
 
     /**
      * 获取链表倒数第 index 个元素
+     *
      * @param head
      * @param index
      * @return
@@ -61,6 +71,93 @@ public class SingleLinkedListDemo {
             curentNode = curentNode.next;
         }
         return curentNode;
+    }
+
+    /**
+     * 逆序打印链表节点
+     *
+     * @param head
+     */
+    public static void reversePrint(HeroNode head) {
+        if (head.next == null) {
+            return;
+        }
+        //借助 stack 数据结构
+        Stack<HeroNode> heroNodeStack = new Stack<>();
+        HeroNode temp = head.next;
+        while (temp != null) {
+            heroNodeStack.push(temp);
+            temp = temp.next;
+        }
+
+        //对 stack 进行出栈操作打印链表元素
+        while (heroNodeStack.size() != 0) {
+            System.out.println(heroNodeStack.pop());
+        }
+
+    }
+
+    /**
+     * 链表反转
+     *
+     * @param head
+     */
+    public static void reverseLinkedList(HeroNode head) {
+        //当链表有效元素个数为 0 或者 1 时不进行反转，直接返回
+        if (head.next == null || head.next.next == null) {
+            return;
+        }
+        //创建一个临时的 head 节点
+        HeroNode reverseNode = new HeroNode(0, "", "");
+        HeroNode temp = head;
+        while (temp.next != null) {
+            //设置临时变量保存遍历到的有效节点
+            HeroNode currentHeroNode = temp.next;
+            //将原链表中遍历到的有效节点摘下
+            temp.next = temp.next.next;
+            //将获取到的有效节点插入在 reverseNode 节点的后面
+            currentHeroNode.next = reverseNode.next;
+            reverseNode.next = currentHeroNode;
+        }
+        //用原来的链表的 head 节点替换 reverse 节点，完成链表反转
+        head.next = reverseNode.next;
+    }
+
+    /**
+     * 合并两个有序链表链表，合并之后链表依然有序
+     *
+     * @param head1
+     * @param head2
+     */
+    public static HeroNode mergeLinkedList(HeroNode head1, HeroNode head2) {
+        if (head1 == null && head2 == null) {
+            return null;
+        }
+        if (head1 == null) {
+            return head2;
+        }
+        if (head2 == null) {
+            return head1;
+
+        }
+        //两个链表都不为空的情况
+        //初始化新链表头结点
+        HeroNode newHeroNode = null;
+        //去除一个头结点，只留下一个头结点
+        if (head1.no == 0) {
+            head1 = head1.next;
+        }
+        if (head1.no > head2.no) {
+            // newHeroNode 始终指向小的节点
+            newHeroNode = head2;
+            //接着递归比较另一个还没放进链表的元素 head1
+            newHeroNode.next = mergeLinkedList(head1, head2.next);
+        } else {
+            newHeroNode = head1;
+            newHeroNode.next = mergeLinkedList(head1.next, head2);
+
+        }
+        return newHeroNode;
     }
 }
 
