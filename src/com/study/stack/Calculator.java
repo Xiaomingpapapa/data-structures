@@ -2,7 +2,7 @@ package com.study.stack;
 
 public class Calculator {
     public static void main(String[] args) {
-        String operString = "30+2*6-2";
+        String operString = "30+20*6-2";
         ClaculatorArryaStack numStack = new ClaculatorArryaStack(10);
         ClaculatorArryaStack operStack = new ClaculatorArryaStack(10);
         //遍历字符串的索引
@@ -13,6 +13,7 @@ public class Calculator {
         int oper = ' ';
         int result = 0;
         char ch = ' ';
+        String numStr = "";
         while (true) {
             ch = operString.substring(index, index + 1).charAt(0);
             //判断遍历到的是否为运算符
@@ -39,7 +40,21 @@ public class Calculator {
                 }
             } else {
                 //数字直接入栈，注意这里有个小细节，char 转换成 int 是隐式转换，对应的是该 char 的 asscii 码值，而数字字符对应的 asscii 值比该数字大 48
-                numStack.push(ch - 48);
+//                numStack.push(ch - 48);
+                //针对多位数进行处理
+                if (index + 1 == operString.length()) {
+                    //代表已经扫描到表达式最后
+                    numStack.push(ch - 48);
+                } else {
+                    //判断下一个字符是数字还是运算符
+                    if (operStack.isOper(operString.substring(index + 1, index + 2).charAt(0))) {
+                        numStack.push(ch - 48);
+                    } else {
+                        numStr = ch + operString.substring(index + 1, index + 2);
+                        numStack.push(Integer.parseInt(numStr));
+                        index++;
+                    }
+                }
             }
             index++;
             //判断是否扫描完毕
