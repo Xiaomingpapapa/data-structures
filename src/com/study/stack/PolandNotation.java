@@ -14,11 +14,11 @@ public class PolandNotation {
         String infixExpression = "(3+5)*2-3";
         List list = getInfixStringList(infixExpression);
         List list2 = parseSuffixExpressionList(list);
-        System.out.println(list2);
+        System.out.printf("表达式" + infixExpression + "的运算结果=%d", cal(list2));
     }
 
 
-    private static void cal(List<String> charList) {
+    private static int cal(List<String> charList) {
         //初始化栈存放操作数
         Stack<Integer> stack = new Stack();
         int result = 0;
@@ -43,7 +43,7 @@ public class PolandNotation {
                 stack.push(result);
             }
         }
-        System.out.printf("运算结果=%d", stack.pop());
+        return stack.pop();
     }
 
     public static List<String> parseSuffixExpressionList(List<String> ls) {
@@ -60,24 +60,19 @@ public class PolandNotation {
                 stack1.push(l);
             } else if (l.equals(")")) {
                 //右括号则暂停入栈操作，检查 stack1 元素，直到匹配到一个 "(" 则停止检查
-                while (stack1.size() > 0 && !stack1.peek().equals("(")) {
+                while (!stack1.peek().equals("(")) {
                     //不断遍历 stack1 元素，直到检查到第一个 "("，期间将遍历得到的运算符压入栈2
                     stack2.add(stack1.pop());
                 }
                 //抛弃这对 "(" 括号，")" 不进行入栈操作
                 stack1.pop();
             } else {
-                if (stack1.size() > 0 && stack1.peek().equals("(")) {
-                    //如果栈顶元素是 "("，则运算符直接入栈
-                    stack1.push(l);
-                } else if (stack1.size() > 0 && getOperationPriority(l) < getOperationPriority(stack1.peek())){
+                while (stack1.size() > 0 && getOperationPriority(l) <= getOperationPriority(stack1.peek())) {
                     //如果当前字符为运算符号的情况，当 stack1 栈顶运算符进行优先级比较
                     //如果优先级比栈顶元素低，将栈顶元素弹出压入 stack2
                     stack2.add(stack1.pop());
-                    stack1.push(l);
-                } else {
-                    stack1.push(l);
                 }
+                stack1.push(l);
             }
         }
 
