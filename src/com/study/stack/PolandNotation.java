@@ -13,7 +13,8 @@ public class PolandNotation {
         // 中缀表达式字符 list 获取 (3+5)*2-3
         String infixExpression = "(3+5)*2-3";
         List list = getInfixStringList(infixExpression);
-        System.out.println(list);
+        List list2 = parseSuffixExpressionList(list);
+        System.out.println(list2);
     }
 
 
@@ -43,6 +44,48 @@ public class PolandNotation {
             }
         }
         System.out.printf("运算结果=%d", stack.pop());
+    }
+
+    public static List<String> parseSuffixExpressionList(List<String> ls) {
+        //栈1 放运算符号
+        Stack<String> stack1 = new Stack<>();
+        //栈2 存放转换过程中表达式元素，在这边为了方便（如果使用 stack 后续还得逆序输出），直接使用 list 存放
+        List<String> stack2 = new ArrayList<>();
+        for (String l : ls) {
+            if (l.matches("\\d+")) {
+                //如果是数字直接入栈2
+                stack2.add(l);
+            } else if (l.equals("(")) {
+                //左括号直接入栈1
+                stack1.push(l);
+            } else if (l.equals(")")) {
+                //右括号则暂停入栈操作，检查 stack1 元素，直到匹配到一个 "(" 则停止检查
+                while (stack1.size() > 0 && !stack1.peek().equals("(")) {
+                    //不断遍历 stack1 元素，直到检查到第一个 "("，期间将遍历得到的运算符压入栈2
+                    stack2.add(stack1.pop());
+                }
+                //抛弃这对 "(" 括号，")" 不进行入栈操作
+                stack1.pop();
+            } else {
+                if (stack1.size() > 0 && stack1.peek().equals("(")) {
+                    //如果栈顶元素是 "("，则运算符直接入栈
+                    stack1.push(l);
+                } else if (stack1.size() > 0 && getOperationPriority(l) < getOperationPriority(stack1.peek())){
+                    //如果当前字符为运算符号的情况，当 stack1 栈顶运算符进行优先级比较
+                    //如果优先级比栈顶元素低，将栈顶元素弹出压入 stack2
+                    stack2.add(stack1.pop());
+                    stack1.push(l);
+                } else {
+                    stack1.push(l);
+                }
+            }
+        }
+
+        //最后将 stack1 中剩余的元素都压入 stack2
+        while (stack1.size() > 0) {
+            stack2.add(stack1.pop());
+        }
+        return stack2;
     }
 
     public static List<String> getInfixStringList(String expression) {
@@ -78,6 +121,27 @@ public class PolandNotation {
             list.add(aChar);
         }
         return list;
+    }
+
+    /**
+     * 获取运算符优先级
+     *
+     * @return
+     */
+    public static int getOperationPriority(String operation) {
+        switch (operation) {
+            case "+":
+                return 1;
+            case "-":
+                return 1;
+            case "*":
+                return 2;
+            case "/":
+                return 2;
+            default:
+                System.out.println("请输入有效运算符");
+                return -1;
+        }
     }
 }
 
