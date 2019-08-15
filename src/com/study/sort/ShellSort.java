@@ -9,7 +9,7 @@ public class ShellSort {
         //初始化一个 80000 个元素的数组
         int[] array = new int[80000];
 
-        for (int i = 0; i < array.length; i++) {
+        for (int i = 0; i < 80000; i++) {
             array[i] = (int)(Math.random() * 8000000);
         }
         Date date = new Date();
@@ -17,7 +17,7 @@ public class ShellSort {
         String beforeSortTime = simpleDateFormat.format(date);
         System.out.println("排序前时间为：" + beforeSortTime);
 
-        shellSort(array);
+        shellSort2(array);
 
         Date date1 = new Date();
         SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -40,6 +40,29 @@ public class ShellSort {
                 }
             }
         }
+    }
+
+    /**
+     * 使用插入法进行排序
+     * @param arr
+     */
+    public static void shellSort2(int[] arr) {
+        for (int gap = arr.length / 2; gap > 0; gap /= 2) {
+            for (int i = gap; i < arr.length; i++) {
+                int insertValue = arr[i];
+                int insertIndex = i - gap;
+                while (insertIndex >= 0 && arr[insertIndex] > insertValue) {
+                    arr[insertIndex + gap] = arr[insertIndex];
+                    insertIndex -= gap;
+                }
+
+                if (insertIndex + gap != i) {
+                    //进行插入
+                    arr[insertIndex + gap] = insertValue;
+                }
+            }
+        }
+//        System.out.println("排序后的数组情况");
 //        System.out.println(Arrays.toString(arr));
     }
 }
