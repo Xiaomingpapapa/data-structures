@@ -19,11 +19,13 @@ public class ThreadedBinaryTreeDemo {
         heroNode2.setLeft(heroNode5);
 
         ThreadedBinaryTree threadedBinaryTree = new ThreadedBinaryTree(root);
-        threadedBinaryTree.threadedBinaryTree();
+//        threadedBinaryTree.threadedBinaryTree();
 
-        System.out.println(heroNode4.getLeft());
-        System.out.println(heroNode4.getRight());
+//        System.out.println(heroNode4.getLeft());
+//        System.out.println(heroNode4.getRight());
 
+//        threadedBinaryTree.threadedList();
+        threadedBinaryTree.infixOrder(root);
 
     }
 }
@@ -39,6 +41,28 @@ class ThreadedBinaryTree {
 
     public void threadedBinaryTree() {
         this.threadedBinaryTree(root);
+    }
+
+    public void threadedList() {
+        HeroNode temp = root;
+
+        // 从根节点开始遍历
+        while (temp != null) {
+            // 优先找到被线索化处理的第一个节点
+            while (temp.getLeftType() == 0) {
+                temp = temp.getLeft();
+            }
+            System.out.println(temp);
+
+            // 检查当前节点是否存在后继节点，有则直接输出后继节点
+            while (temp.getRightType() == 1) {
+                temp = temp.getRight();
+                System.out.println(temp);
+            }
+
+
+            temp = temp.getRight();
+        }
     }
 
     // 存储当前节点的前驱节点，初始化为 null
@@ -74,6 +98,19 @@ class ThreadedBinaryTree {
 
         // 线索化右子树
         threadedBinaryTree(heroNode.getRight());
+    }
+
+    /**
+     * 中序遍历二叉树
+     */
+    public void infixOrder(HeroNode heroNode) {
+        if (heroNode == null) {
+            return;
+        }
+
+        infixOrder(heroNode.getLeft());
+        System.out.println(heroNode);
+        infixOrder(heroNode.getRight());
     }
 }
 
