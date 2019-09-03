@@ -10,7 +10,9 @@ public class HuffmanCode {
         System.out.println(list);
 
         Node root = createHuffmanTree(list);
-        preOrder(root);
+//        preOrder(root);
+        getHuffmanCode(root, "", stringBuilder);
+        System.out.println(huffmanCode);
     }
 
     public static void preOrder(Node root) {
@@ -66,6 +68,29 @@ public class HuffmanCode {
             nodes.add(parent);
         }
         return nodes.get(0);
+    }
+
+    public static Map<Byte, String> huffmanCode = new HashMap<>();
+    public static StringBuilder stringBuilder = new StringBuilder();
+
+    /**
+     * 创建 huffman 编码表
+     * @param node huffman 树节点
+     * @param code 路径编码，向左为 1，向右为 2
+     * @param stringBuilder 用于拼接叶子节点的编码路径
+     * @return
+     */
+    public static void getHuffmanCode(Node node, String code, StringBuilder stringBuilder) {
+        StringBuilder stringBuilder1 = new StringBuilder(stringBuilder);
+        stringBuilder1.append(code);
+        if (node.getData() == null) {
+            // 如果不是叶子节点，则继续向下遍历
+            getHuffmanCode(node.getLeft(), "0", stringBuilder1);
+            getHuffmanCode(node.getRight(), "1", stringBuilder1);
+        } else {
+            // 是叶子节点则直接存储其对应的 huffman 编码
+            huffmanCode.put(node.getData(), stringBuilder1.toString());
+        }
     }
 }
 
